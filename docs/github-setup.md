@@ -42,7 +42,20 @@ gh auth status
 
 ## 第三步：推送仓库
 
-在 PowerShell 中执行（**把 `你的用户名` 换成真实 GitHub 用户名**）：
+先确认本地修改已经提交（脚本只会推送 Git 提交过的内容）：
+
+```powershell
+git status
+```
+
+如果有未提交文件，先执行：
+
+```powershell
+git add .
+git commit -m "描述你的修改"
+```
+
+然后在 PowerShell 中执行（**把 `你的用户名` 换成真实 GitHub 用户名**）：
 
 ```powershell
 cd d:\AI\stereo-to-714-vst3
@@ -51,9 +64,10 @@ cd d:\AI\stereo-to-714-vst3
 
 脚本会：
 
-1. 在 GitHub 创建仓库 `stereo-to-714-vst3`（私有或公开，默认公开）
-2. 推送代码
-3. 自动触发 **Build VST3** 编译
+1. 检查当前 Git 工作区是否干净，避免漏推未提交代码
+2. 在 GitHub 创建私有仓库 `stereo-to-714-vst3`（默认私有）
+3. 只在 `origin` 不存在或已经指向同一个 GitHub 仓库时继续
+4. 推送代码并自动触发 **Build VST3** 编译
 
 ---
 
@@ -75,20 +89,26 @@ cd d:\AI\stereo-to-714-vst3
 
 ## 常见问题
 
-**Q: 仓库想设为私有？**
+**Q: 仓库想设为公开？**
 
 ```powershell
-.\scripts\push-to-github.ps1 -GitHubUser 你的用户名 -Private
+.\scripts\push-to-github.ps1 -GitHubUser 你的用户名 -Public
 ```
 
 **Q: 推送时提示 repository already exists？**
 
-脚本会尝试推送到已有仓库；若你手动建过同名仓库，直接推送即可：
+脚本会尝试推送到已有的同名仓库；若你手动建过同名仓库，确认 `origin` 指向正确地址后直接推送即可：
 
 ```powershell
-git remote add origin https://github.com/你的用户名/stereo-to-714-vst3.git
+git remote get-url origin
 git branch -M main
 git push -u origin main
+```
+
+如果 `origin` 指向其他仓库，脚本会停止。确认无误后再手动改地址：
+
+```powershell
+git remote set-url origin https://github.com/你的用户名/stereo-to-714-vst3.git
 ```
 
 **Q: Actions 没有运行？**
