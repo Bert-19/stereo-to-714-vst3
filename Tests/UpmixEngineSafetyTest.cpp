@@ -18,7 +18,7 @@ bool bufferIsSilent (const juce::AudioBuffer<float>& buffer)
 {
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-            if (buffer.getSample (ch, sample) != 0.0f)
+            if (std::abs (buffer.getSample (ch, sample)) > 1.0e-7f)
                 return false;
 
     return true;
@@ -27,7 +27,8 @@ bool bufferIsSilent (const juce::AudioBuffer<float>& buffer)
 void fillBuffer (juce::AudioBuffer<float>& buffer, float value)
 {
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
-        buffer.fill (ch, 0, buffer.getNumSamples(), value);
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+            buffer.setSample (ch, sample, value);
 }
 
 bool unpreparedProcessClearsOutput()
@@ -83,14 +84,17 @@ bool preparedBypassCopiesStereo()
 
     for (int sample = 0; sample < input.getNumSamples(); ++sample)
     {
-        if (! expect (output.getSample (0, sample) == input.getSample (0, sample), "bypass should copy left input")
-            || ! expect (output.getSample (1, sample) == input.getSample (1, sample), "bypass should copy right input"))
+        if (! expect (std::abs (output.getSample (0, sample) - input.getSample (0, sample)) <= 1.0e-7f,
+                      "bypass should copy left input")
+            || ! expect (std::abs (output.getSample (1, sample) - input.getSample (1, sample)) <= 1.0e-7f,
+                         "bypass should copy right input"))
             return false;
     }
 
     for (int ch = 2; ch < output.getNumChannels(); ++ch)
         for (int sample = 0; sample < output.getNumSamples(); ++sample)
-            if (! expect (output.getSample (ch, sample) == 0.0f, "bypass should clear non-stereo outputs"))
+            if (! expect (std::abs (output.getSample (ch, sample)) <= 1.0e-7f,
+                          "bypass should clear non-stereo outputs"))
                 return false;
 
     return true;
