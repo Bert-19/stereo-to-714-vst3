@@ -147,12 +147,14 @@ upmix::UpmixParams StereoTo714AudioProcessor::readParams() const
 void StereoTo714AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     upmixEngine.prepare (sampleRate, samplesPerBlock);
+    prepared = true;
     setLatencySamples (upmixEngine.getLatencySamples());
 }
 
 void StereoTo714AudioProcessor::releaseResources()
 {
     upmixEngine.reset();
+    prepared = false;
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -177,8 +179,11 @@ void StereoTo714AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     const auto totalNumInputChannels  = getTotalNumInputChannels();
     const auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    if (totalNumInputChannels < 2 || totalNumOutputChannels < upmix::kNum714Channels)
+    if (! prepared || totalNumInputChannels < 2 || totalNumOutputChannels < upmix::kNum714Channels)
+    {
+        buffer.clear();
         return;
+    }
 
     juce::AudioBuffer<float> input (2, buffer.getNumSamples());
     input.copyFrom (0, 0, buffer, 0, 0, buffer.getNumSamples());
