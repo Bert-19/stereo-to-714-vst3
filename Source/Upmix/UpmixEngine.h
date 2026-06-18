@@ -58,6 +58,7 @@ private:
     int samplesUntilHop = kHopSize;
 
     double sampleRate = 48000.0;
+    bool prepared = false;
 };
 
 } // namespace upmix

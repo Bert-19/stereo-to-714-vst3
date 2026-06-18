@@ -40,6 +40,7 @@ void UpmixEngine::prepare (double newSampleRate, int maxBlockSize)
         fifo.assign (fifoSize, 0.0f);
 
     reset();
+    prepared = true;
 }
 
 void UpmixEngine::reset()
@@ -257,6 +258,12 @@ void UpmixEngine::process (const juce::AudioBuffer<float>& input, juce::AudioBuf
         if (numOutChannels > 1)
             output.copyFrom (1, 0, input, 1, 0, numSamples);
 
+        return;
+    }
+
+    if (! prepared)
+    {
+        output.clear();
         return;
     }
 
