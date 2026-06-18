@@ -178,7 +178,10 @@ void StereoTo714AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     const auto totalNumOutputChannels = getTotalNumOutputChannels();
 
     if (totalNumInputChannels < 2 || totalNumOutputChannels < upmix::kNum714Channels)
+    {
+        buffer.clear();
         return;
+    }
 
     juce::AudioBuffer<float> input (2, buffer.getNumSamples());
     input.copyFrom (0, 0, buffer, 0, 0, buffer.getNumSamples());
