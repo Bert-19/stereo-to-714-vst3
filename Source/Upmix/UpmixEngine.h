@@ -21,6 +21,7 @@ public:
     void reset();
     void setParams (const UpmixParams& newParams);
 
+    bool isPrepared() const noexcept { return prepared; }
     int getLatencySamples() const noexcept { return kFftSize - kHopSize; }
 
     void process (const juce::AudioBuffer<float>& input, juce::AudioBuffer<float>& output);
@@ -56,6 +57,7 @@ private:
     int outputReadPos = 0;
     int outputWritePos = 0;
     int samplesUntilHop = kHopSize;
+    bool prepared = false;
 
     double sampleRate = 48000.0;
 };
