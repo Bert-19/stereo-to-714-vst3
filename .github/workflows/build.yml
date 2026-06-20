@@ -26,7 +26,7 @@ jobs:
         run: |
           cd build/StereoTo714_artefacts/Release/VST3
           ditto -c -k --sequesterRsrc --keepParent \
-            "Stereo to 7.1.4.vst3" \
+            "StereoTo714.vst3" \
             "${{ github.workspace }}/StereoTo714-macos-universal.zip"
 
       - name: Upload macOS artifact
@@ -51,7 +51,7 @@ jobs:
       - name: Package Windows VST3
         shell: pwsh
         run: |
-          Compress-Archive -Path "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" `
+          Compress-Archive -Path "build/StereoTo714_artefacts/Release/VST3/StereoTo714.vst3" `
             -DestinationPath "StereoTo714-windows.zip" -Force
 
       - name: Upload Windows artifact

@@ -43,7 +43,7 @@ cmake -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Release
 ```
 
-产物：`build\StereoTo714_artefacts\Release\VST3\Stereo to 7.1.4.vst3`
+产物：`build\StereoTo714_artefacts\Release\VST3\StereoTo714.vst3`
 
 ### macOS（Reaper 等）
 

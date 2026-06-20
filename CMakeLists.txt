@@ -27,7 +27,8 @@ juce_add_plugin(StereoTo714
     PLUGIN_MANUFACTURER_CODE StUp
     PLUGIN_CODE St71
     FORMATS VST3
-    PRODUCT_NAME "Stereo to 7.1.4")
+    PLUGIN_NAME "Stereo to 7.1.4"
+    PRODUCT_NAME "StereoTo714")
 
 juce_generate_juce_header(StereoTo714)
 

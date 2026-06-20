@@ -63,7 +63,7 @@ cd d:\AI\stereo-to-714-vst3
 2. 点击 **Actions** 标签
 3. 等待 **Build VST3** 显示绿色 ✓（约 5–15 分钟）
 4. 进入该次运行 → 底部 **Artifacts** → 下载 **StereoTo714-vst3-macos-universal**
-5. 解压 zip，将 `Stereo to 7.1.4.vst3` 复制到 Mac 的：
+5. 解压 zip，将 `StereoTo714.vst3` 复制到 Mac 的：
 
    ```
    ~/Library/Audio/Plug-Ins/VST3/
