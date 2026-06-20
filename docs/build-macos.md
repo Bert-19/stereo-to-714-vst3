@@ -48,7 +48,7 @@ cmake --build build --config Release
 ### 产物路径
 
 ```
-build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3
+build/StereoTo714_artefacts/Release/VST3/StereoTo714.vst3
 ```
 
 ---
@@ -59,21 +59,21 @@ build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3
 
 ```bash
 mkdir -p ~/Library/Audio/Plug-Ins/VST3
-cp -R "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" \
+cp -R "build/StereoTo714_artefacts/Release/VST3/StereoTo714.vst3" \
       ~/Library/Audio/Plug-Ins/VST3/
 ```
 
 **所有用户：**
 
 ```bash
-sudo cp -R "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" \
+sudo cp -R "build/StereoTo714_artefacts/Release/VST3/StereoTo714.vst3" \
            /Library/Audio/Plug-Ins/VST3/
 ```
 
 ### 若 macOS 拦截未签名插件
 
 ```bash
-xattr -cr ~/Library/Audio/Plug-Ins/VST3/Stereo\ to\ 7.1.4.vst3
+xattr -cr ~/Library/Audio/Plug-Ins/VST3/StereoTo714.vst3
 ```
 
 或在 **系统设置 → 隐私与安全性** 中允许打开。
