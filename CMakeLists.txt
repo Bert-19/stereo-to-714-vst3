@@ -54,3 +54,39 @@ target_link_libraries(StereoTo714
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+juce_add_console_app(UpmixEngineTests
+    PRODUCT_NAME "UpmixEngineTests")
+
+juce_generate_juce_header(UpmixEngineTests)
+
+target_sources(UpmixEngineTests
+    PRIVATE
+        tests/UpmixEngineTests.cpp
+        Source/Upmix/UpmixEngine.cpp
+        Source/Upmix/SpatialEstimator.cpp
+        Source/Upmix/Decorrelator.cpp)
+
+target_include_directories(UpmixEngineTests
+    PRIVATE
+        Source)
+
+target_compile_definitions(UpmixEngineTests
+    PUBLIC
+        JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=0
+        JUCE_VST3_CAN_REPLACE_VST2=0
+        JUCE_DISPLAY_SPLASH_SCREEN=0)
+
+target_link_libraries(UpmixEngineTests
+    PRIVATE
+        juce::juce_dsp
+    PUBLIC
+        juce::juce_recommended_config_flags
+        juce::juce_recommended_lto_flags
+        juce::juce_recommended_warning_flags)
+
+enable_testing()
+
+add_test(NAME UpmixEngineTests
+         COMMAND UpmixEngineTests)

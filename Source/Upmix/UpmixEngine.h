@@ -29,6 +29,12 @@ private:
     static std::complex<float> readSpectrumBin (const float* data, int binIndex);
     static void writeSpectrumBin (float* data, int binIndex, std::complex<float> value);
 
+    float processBypassDelaySample (int channelIndex, float inputSample);
+    void advanceBypassDelay (const juce::AudioBuffer<float>& input);
+    void processBypass (const juce::AudioBuffer<float>& input,
+                        juce::AudioBuffer<float>& output,
+                        int numOutChannels);
+
     void processHop();
     void processSpectrumBin (int binIndex,
                              std::complex<float> xl,
@@ -51,11 +57,13 @@ private:
     std::vector<float> inputFifoL;
     std::vector<float> inputFifoR;
     std::array<std::vector<float>, kNum714Channels> outputFifo;
+    std::array<std::vector<float>, 2> bypassDelayFifo;
 
     int inputWritePos = 0;
     int outputReadPos = 0;
     int outputWritePos = 0;
     int samplesUntilHop = kHopSize;
+    int bypassDelayPos = 0;
 
     double sampleRate = 48000.0;
 };

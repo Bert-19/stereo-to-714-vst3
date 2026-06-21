@@ -39,6 +39,9 @@ void UpmixEngine::prepare (double newSampleRate, int maxBlockSize)
     for (auto& fifo : outputFifo)
         fifo.assign (fifoSize, 0.0f);
 
+    for (auto& fifo : bypassDelayFifo)
+        fifo.assign (static_cast<size_t> (getLatencySamples()), 0.0f);
+
     reset();
 }
 
@@ -54,6 +57,11 @@ void UpmixEngine::reset()
     outputReadPos = 0;
     outputWritePos = kFftSize - kHopSize;
     samplesUntilHop = kHopSize;
+
+    for (auto& fifo : bypassDelayFifo)
+        std::fill (fifo.begin(), fifo.end(), 0.0f);
+
+    bypassDelayPos = 0;
 }
 
 void UpmixEngine::setParams (const UpmixParams& newParams)
@@ -88,6 +96,62 @@ void UpmixEngine::writeSpectrumBin (float* data, int binIndex, std::complex<floa
 
     data[binIndex * 2] = value.real();
     data[binIndex * 2 + 1] = value.imag();
+}
+
+float UpmixEngine::processBypassDelaySample (int channelIndex, float inputSample)
+{
+    auto& fifo = bypassDelayFifo[static_cast<size_t> (channelIndex)];
+
+    if (fifo.empty())
+        return inputSample;
+
+    const auto index = static_cast<size_t> (bypassDelayPos);
+    const auto delayedSample = fifo[index];
+    fifo[index] = inputSample;
+    return delayedSample;
+}
+
+void UpmixEngine::advanceBypassDelay (const juce::AudioBuffer<float>& input)
+{
+    const auto numSamples = input.getNumSamples();
+    const auto* inL = input.getReadPointer (0);
+    const auto* inR = input.getReadPointer (1);
+
+    for (int sample = 0; sample < numSamples; ++sample)
+    {
+        processBypassDelaySample (0, inL[sample]);
+        processBypassDelaySample (1, inR[sample]);
+
+        if (! bypassDelayFifo[0].empty())
+            bypassDelayPos = (bypassDelayPos + 1) % static_cast<int> (bypassDelayFifo[0].size());
+    }
+}
+
+void UpmixEngine::processBypass (const juce::AudioBuffer<float>& input,
+                                 juce::AudioBuffer<float>& output,
+                                 int numOutChannels)
+{
+    const auto numSamples = input.getNumSamples();
+    const auto* inL = input.getReadPointer (0);
+    const auto* inR = input.getReadPointer (1);
+
+    for (int ch = 0; ch < numOutChannels; ++ch)
+        output.clear (ch, 0, numSamples);
+
+    for (int sample = 0; sample < numSamples; ++sample)
+    {
+        const auto delayedL = processBypassDelaySample (0, inL[sample]);
+        const auto delayedR = processBypassDelaySample (1, inR[sample]);
+
+        if (numOutChannels > 0)
+            output.setSample (0, sample, delayedL);
+
+        if (numOutChannels > 1)
+            output.setSample (1, sample, delayedR);
+
+        if (! bypassDelayFifo[0].empty())
+            bypassDelayPos = (bypassDelayPos + 1) % static_cast<int> (bypassDelayFifo[0].size());
+    }
 }
 
 float UpmixEngine::lfeWeight (int binIndex) const
@@ -248,17 +312,11 @@ void UpmixEngine::process (const juce::AudioBuffer<float>& input, juce::AudioBuf
 
     if (params.bypass)
     {
-        for (int ch = 0; ch < numOutChannels; ++ch)
-            output.clear (ch, 0, numSamples);
-
-        if (numOutChannels > 0)
-            output.copyFrom (0, 0, input, 0, 0, numSamples);
-
-        if (numOutChannels > 1)
-            output.copyFrom (1, 0, input, 1, 0, numSamples);
-
+        processBypass (input, output, numOutChannels);
         return;
     }
+
+    advanceBypassDelay (input);
 
     const auto* inL = input.getReadPointer (0);
     const auto* inR = input.getReadPointer (1);
