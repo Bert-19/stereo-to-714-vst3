@@ -267,7 +267,7 @@ void UpmixEngine::process (const juce::AudioBuffer<float>& input, juce::AudioBuf
 
         if (bypass)
         {
-            const auto dryReadPos = (inputWritePos - latencySamples + fifoSize) % fifoSize;
+            const auto dryReadPos = (inputWritePos - latencySamples - 1 + fifoSize) % fifoSize;
 
             for (int ch = 0; ch < numOutChannels; ++ch)
             {
