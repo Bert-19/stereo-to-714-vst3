@@ -245,24 +245,11 @@ void UpmixEngine::process (const juce::AudioBuffer<float>& input, juce::AudioBuf
 {
     const auto numSamples = input.getNumSamples();
     const auto numOutChannels = juce::jmin (output.getNumChannels(), kNum714Channels);
-
-    if (params.bypass)
-    {
-        for (int ch = 0; ch < numOutChannels; ++ch)
-            output.clear (ch, 0, numSamples);
-
-        if (numOutChannels > 0)
-            output.copyFrom (0, 0, input, 0, 0, numSamples);
-
-        if (numOutChannels > 1)
-            output.copyFrom (1, 0, input, 1, 0, numSamples);
-
-        return;
-    }
-
     const auto* inL = input.getReadPointer (0);
     const auto* inR = input.getReadPointer (1);
     const auto fifoSize = static_cast<int> (inputFifoL.size());
+    const auto latencySamples = getLatencySamples();
+    const auto bypass = params.bypass;
 
     for (int sample = 0; sample < numSamples; ++sample)
     {
@@ -278,11 +265,31 @@ void UpmixEngine::process (const juce::AudioBuffer<float>& input, juce::AudioBuf
             samplesUntilHop = kHopSize;
         }
 
-        for (int ch = 0; ch < numOutChannels; ++ch)
+        if (bypass)
         {
-            auto* out = output.getWritePointer (ch);
-            out[sample] = outputFifo[static_cast<size_t> (ch)][static_cast<size_t> (outputReadPos)];
-            outputFifo[static_cast<size_t> (ch)][static_cast<size_t> (outputReadPos)] = 0.0f;
+            const auto dryReadPos = (inputWritePos - latencySamples - 1 + fifoSize) % fifoSize;
+
+            for (int ch = 0; ch < numOutChannels; ++ch)
+            {
+                auto* out = output.getWritePointer (ch);
+                out[sample] = 0.0f;
+                outputFifo[static_cast<size_t> (ch)][static_cast<size_t> (outputReadPos)] = 0.0f;
+            }
+
+            if (numOutChannels > 0)
+                output.getWritePointer (0)[sample] = inputFifoL[static_cast<size_t> (dryReadPos)];
+
+            if (numOutChannels > 1)
+                output.getWritePointer (1)[sample] = inputFifoR[static_cast<size_t> (dryReadPos)];
+        }
+        else
+        {
+            for (int ch = 0; ch < numOutChannels; ++ch)
+            {
+                auto* out = output.getWritePointer (ch);
+                out[sample] = outputFifo[static_cast<size_t> (ch)][static_cast<size_t> (outputReadPos)];
+                outputFifo[static_cast<size_t> (ch)][static_cast<size_t> (outputReadPos)] = 0.0f;
+            }
         }
 
         outputReadPos = (outputReadPos + 1) % fifoSize;
