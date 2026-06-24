@@ -41,21 +41,29 @@ void SpatialEstimator::analyseBin (int binIndex,
                                    float& psi,
                                    float& gamma) const
 {
+    constexpr float epsilon = 1.0e-8f;
+
     const float pl = std::norm (xl);
     const float pr = std::norm (xr);
     const auto cross = xl * std::conj (xr);
 
-    const float denom = std::sqrt (pl * pr) + 1.0e-8f;
-    gamma = juce::jlimit (0.0f, 1.0f, std::abs (cross) / denom);
+    const float totalPower = pl + pr;
+    const float sharedPowerRatio = (2.0f * juce::jmin (pl, pr)) / (totalPower + epsilon);
+    const float correlation = juce::jlimit (0.0f, 1.0f, std::abs (cross) / (std::sqrt (pl * pr) + epsilon));
+
+    gamma = juce::jlimit (0.0f, 1.0f, 1.0f - sharedPowerRatio * (1.0f - correlation));
     psi = 1.0f - gamma;
 
-    const float ild = 10.0f * std::log10 ((pl + 1.0e-8f) / (pr + 1.0e-8f));
+    const float ild = 10.0f * std::log10 ((pl + epsilon) / (pr + epsilon));
     const float ipd = std::atan2 (cross.imag(), cross.real());
 
     const auto idx = static_cast<size_t> (binIndex);
     const float thetaIld = juce::jlimit (-kThetaMaxDeg, kThetaMaxDeg, ild * ildToTheta[idx]);
     const float thetaIpd = juce::jlimit (-kThetaMaxDeg, kThetaMaxDeg, ipd * ipdToTheta[idx]);
-    thetaDeg = ildWeight[idx] * thetaIld + ipdWeight[idx] * thetaIpd;
+
+    const float effectiveIldWeight = juce::jmax (ildWeight[idx], 1.0f - sharedPowerRatio);
+    const float effectiveIpdWeight = 1.0f - effectiveIldWeight;
+    thetaDeg = effectiveIldWeight * thetaIld + effectiveIpdWeight * thetaIpd;
 }
 
 } // namespace upmix
