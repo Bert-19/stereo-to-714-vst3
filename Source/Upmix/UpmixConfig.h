@@ -19,16 +19,18 @@ enum Channel714 : int
     chL = 0,
     chR,
     chC,
-    chLFE,
     chLs,
     chRs,
     chLrs,
     chRrs,
+    chLFE,
     chLtf,
     chRtf,
     chLtr,
     chRtr
 };
+
+static_assert (chLFE == 7, "Channel714 must match JUCE create7point1point4() order.");
 
 enum class HeightMode { conservative = 0, aggressive };
 enum class CenterMode { movie = 0, music };
@@ -43,11 +45,11 @@ inline constexpr std::array<SpeakerLayout, kNum714Channels> kSpeakers { {
     { +30.0f, false },
     { -30.0f, false },
     {   0.0f, false },
-    {   0.0f, false },
     { +110.0f, false },
     { -110.0f, false },
     { +150.0f, false },
     { -150.0f, false },
+    {   0.0f, false },
     { +45.0f, true },
     { -45.0f, true },
     { +135.0f, true },
