@@ -5,6 +5,8 @@ project(StereoTo714 VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(STEREO_TO_714_BUILD_TESTS "Build StereoTo714 tests" ON)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -54,3 +56,37 @@ target_link_libraries(StereoTo714
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+if(STEREO_TO_714_BUILD_TESTS)
+    enable_testing()
+
+    juce_add_console_app(StereoTo714Tests
+        PRODUCT_NAME "StereoTo714Tests")
+
+    juce_generate_juce_header(StereoTo714Tests)
+
+    target_sources(StereoTo714Tests
+        PRIVATE
+            Tests/ProcessorTests.cpp
+            Source/PluginProcessor.cpp
+            Source/PluginEditor.cpp
+            Source/Upmix/UpmixEngine.cpp
+            Source/Upmix/SpatialEstimator.cpp
+            Source/Upmix/Decorrelator.cpp)
+
+    target_compile_definitions(StereoTo714Tests
+        PRIVATE
+            JucePlugin_Name="Stereo to 7.1.4"
+            JUCE_WEB_BROWSER=0
+            JUCE_USE_CURL=0
+            JUCE_DISPLAY_SPLASH_SCREEN=0)
+
+    target_link_libraries(StereoTo714Tests
+        PRIVATE
+            juce::juce_audio_utils
+            juce::juce_dsp
+            juce::juce_recommended_config_flags
+            juce::juce_recommended_warning_flags)
+
+    add_test(NAME StereoTo714ProcessorTests COMMAND StereoTo714Tests)
+endif()
