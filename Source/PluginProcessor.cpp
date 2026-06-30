@@ -188,6 +188,11 @@ void StereoTo714AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
     upmixEngine.process (input, buffer);
 }
 
+juce::AudioProcessorParameter* StereoTo714AudioProcessor::getBypassParameter() const
+{
+    return apvts.getParameter (kBypass);
+}
+
 bool StereoTo714AudioProcessor::hasEditor() const
 {
     return true;
