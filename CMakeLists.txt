@@ -63,6 +63,8 @@ if(STEREO_TO_714_BUILD_TESTS)
     juce_add_console_app(StereoTo714Tests
         PRODUCT_NAME "StereoTo714Tests")
 
+    juce_generate_juce_header(StereoTo714Tests)
+
     target_sources(StereoTo714Tests
         PRIVATE
             Tests/ProcessorTests.cpp
