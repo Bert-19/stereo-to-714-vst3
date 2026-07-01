@@ -5,6 +5,8 @@ project(StereoTo714 VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(CTest)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -54,3 +56,18 @@ target_link_libraries(StereoTo714
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+if(BUILD_TESTING)
+    add_executable(ChannelLayoutTests
+        tests/channel_layout_test.cpp)
+
+    target_include_directories(ChannelLayoutTests
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/Source)
+
+    target_link_libraries(ChannelLayoutTests
+        PRIVATE
+            juce::juce_audio_basics)
+
+    add_test(NAME ChannelLayoutTests COMMAND ChannelLayoutTests)
+endif()

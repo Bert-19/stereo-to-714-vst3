@@ -22,13 +22,17 @@ enum Channel714 : int
     chLFE,
     chLs,
     chRs,
-    chLrs,
-    chRrs,
     chLtf,
     chRtf,
     chLtr,
-    chRtr
+    chRtr,
+    chLrs,
+    chRrs
 };
+
+static_assert (chLFE == 3, "Channel714 must keep LFE at JUCE create7point1point4() index 3.");
+static_assert (chLtf == 6, "Channel714 must match JUCE create7point1point4() height-channel order.");
+static_assert (chLrs == 10, "Channel714 must match JUCE create7point1point4() rear-surround order.");
 
 enum class HeightMode { conservative = 0, aggressive };
 enum class CenterMode { movie = 0, music };
@@ -46,12 +50,12 @@ inline constexpr std::array<SpeakerLayout, kNum714Channels> kSpeakers { {
     {   0.0f, false },
     { +110.0f, false },
     { -110.0f, false },
-    { +150.0f, false },
-    { -150.0f, false },
     { +45.0f, true },
     { -45.0f, true },
     { +135.0f, true },
     { -135.0f, true },
+    { +150.0f, false },
+    { -150.0f, false },
 } };
 
 struct UpmixParams
