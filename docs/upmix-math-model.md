@@ -24,7 +24,7 @@
 输出声道索引（与 JUCE `create7point1point4()` 一致）：
 
 \[
-\mathbf{y} = [y_\mathrm{L},\, y_\mathrm{R},\, y_\mathrm{C},\, y_\mathrm{LFE},\, y_\mathrm{Ls},\, y_\mathrm{Rs},\, y_\mathrm{Lrs},\, y_\mathrm{Rrs},\, y_\mathrm{Ltf},\, y_\mathrm{Rtf},\, y_\mathrm{Ltr},\, y_\mathrm{Rtr}]^\mathsf{T}
+\mathbf{y} = [y_\mathrm{L},\, y_\mathrm{R},\, y_\mathrm{C},\, y_\mathrm{LFE},\, y_\mathrm{Ls},\, y_\mathrm{Rs},\, y_\mathrm{Ltf},\, y_\mathrm{Rtf},\, y_\mathrm{Ltr},\, y_\mathrm{Rtr},\, y_\mathrm{Lrs},\, y_\mathrm{Rrs}]^\mathsf{T}
 \]
 
 ---
