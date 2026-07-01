@@ -65,6 +65,10 @@ if(BUILD_TESTING)
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/Source)
 
+    target_compile_definitions(ChannelLayoutTests
+        PRIVATE
+            JUCE_USE_CURL=0)
+
     target_link_libraries(ChannelLayoutTests
         PRIVATE
             juce::juce_audio_basics)
