@@ -27,8 +27,19 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Ensure on main branch
-git branch -M main 2>$null
+# Only publish from the intended default branch. Renaming the current branch here
+# could accidentally push feature work to origin/main.
+$currentBranch = (git branch --show-current).Trim()
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($currentBranch)) {
+    Write-Host "Unable to determine the current Git branch. Check out main before pushing." -ForegroundColor Red
+    exit 1
+}
+
+if ($currentBranch -ne "main") {
+    Write-Host "Refusing to push branch '$currentBranch' to origin/main." -ForegroundColor Red
+    Write-Host "Run 'git switch main' first, then run this script again." -ForegroundColor Yellow
+    exit 1
+}
 
 $remoteUrl = "https://github.com/$GitHubUser/$repoName.git"
 
