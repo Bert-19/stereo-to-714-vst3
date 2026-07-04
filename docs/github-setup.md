@@ -87,7 +87,7 @@ cd d:\AI\stereo-to-714-vst3
 
 ```powershell
 git remote add origin https://github.com/你的用户名/stereo-to-714-vst3.git
-git branch -M main
+git switch main
 git push -u origin main
 ```
 
