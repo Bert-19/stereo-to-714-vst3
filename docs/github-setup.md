@@ -69,6 +69,8 @@ cd d:\AI\stereo-to-714-vst3
    ~/Library/Audio/Plug-Ins/VST3/
    ```
 
+   如果 Mac 上已有旧版本，请先删除旧的 `Stereo to 7.1.4.vst3`，再复制新版本，避免新旧 bundle 文件混在一起。
+
 6. Reaper → Preferences → VST → Re-scan → 加载插件
 
 ---
@@ -86,8 +88,12 @@ cd d:\AI\stereo-to-714-vst3
 脚本会尝试推送到已有仓库；若你手动建过同名仓库，直接推送即可：
 
 ```powershell
-git remote add origin https://github.com/你的用户名/stereo-to-714-vst3.git
-git branch -M main
+if (git remote get-url origin 2>$null) {
+  git remote set-url origin https://github.com/你的用户名/stereo-to-714-vst3.git
+} else {
+  git remote add origin https://github.com/你的用户名/stereo-to-714-vst3.git
+}
+git switch main
 git push -u origin main
 ```
 
@@ -99,7 +105,8 @@ git push -u origin main
 
 ```powershell
 cd d:\AI\stereo-to-714-vst3
-git add .
+git status
+git add Source docs CMakeLists.txt README.md .github scripts
 git commit -m "描述你的修改"
 git push
 ```
