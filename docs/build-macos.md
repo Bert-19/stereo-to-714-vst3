@@ -41,6 +41,8 @@ cmake --build build --config Release
 仅 Apple Silicon（M 系列）可省略 Universal，只编 arm64：
 
 ```bash
+# 如果之前用 build 目录配置过 Universal 或 Intel 架构，先清掉 CMake 缓存。
+rm -rf build
 cmake -B build -G Xcode -DCMAKE_OSX_ARCHITECTURES=arm64
 cmake --build build --config Release
 ```
@@ -59,6 +61,7 @@ build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3
 
 ```bash
 mkdir -p ~/Library/Audio/Plug-Ins/VST3
+rm -rf ~/Library/Audio/Plug-Ins/VST3/Stereo\ to\ 7.1.4.vst3
 cp -R "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" \
       ~/Library/Audio/Plug-Ins/VST3/
 ```
@@ -66,6 +69,8 @@ cp -R "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" \
 **所有用户：**
 
 ```bash
+sudo mkdir -p /Library/Audio/Plug-Ins/VST3
+sudo rm -rf "/Library/Audio/Plug-Ins/VST3/Stereo to 7.1.4.vst3"
 sudo cp -R "build/StereoTo714_artefacts/Release/VST3/Stereo to 7.1.4.vst3" \
            /Library/Audio/Plug-Ins/VST3/
 ```
