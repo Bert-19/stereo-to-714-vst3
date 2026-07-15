@@ -108,6 +108,10 @@ xattr -cr ~/Library/Audio/Plug-Ins/VST3/Stereo\ to\ 7.1.4.vst3
    - `StereoTo714-vst3-macos-universal`（Mac 用）
    - `StereoTo714-vst3-windows`（Windows 用）
 5. 解压 zip，将 `.vst3` 复制到 `~/Library/Audio/Plug-Ins/VST3/`
+6. GitHub Actions 下载的未签名插件可能带有 macOS quarantine 标记。首次扫描前执行：
+   ```bash
+   xattr -cr "$HOME/Library/Audio/Plug-Ins/VST3/Stereo to 7.1.4.vst3"
+   ```
 
 ---
 
