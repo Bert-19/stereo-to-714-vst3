@@ -69,7 +69,13 @@ cd d:\AI\stereo-to-714-vst3
    ~/Library/Audio/Plug-Ins/VST3/
    ```
 
-6. Reaper → Preferences → VST → Re-scan → 加载插件
+6. GitHub Actions 下载的未签名插件可能带有 macOS quarantine 标记。首次扫描前在 Mac 终端执行：
+
+   ```bash
+   xattr -cr "$HOME/Library/Audio/Plug-Ins/VST3/Stereo to 7.1.4.vst3"
+   ```
+
+7. Reaper → Preferences → VST → Re-scan → 加载插件
 
 ---
 
