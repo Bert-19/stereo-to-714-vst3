@@ -52,7 +52,7 @@ void UpmixEngine::reset()
 
     inputWritePos = 0;
     outputReadPos = 0;
-    outputWritePos = kFftSize - kHopSize;
+    outputWritePos = kHopSize;
     samplesUntilHop = kHopSize;
 }
 

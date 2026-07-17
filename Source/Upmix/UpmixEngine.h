@@ -21,7 +21,7 @@ public:
     void reset();
     void setParams (const UpmixParams& newParams);
 
-    int getLatencySamples() const noexcept { return kFftSize - kHopSize; }
+    int getLatencySamples() const noexcept { return kFftSize; }
 
     void process (const juce::AudioBuffer<float>& input, juce::AudioBuffer<float>& output);
 
